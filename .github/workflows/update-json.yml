@@ -1,0 +1,25 @@
+name: Update last-updated.json
+
+on:
+  push:
+    branches: 
+      - main  # O cambia a 'master' si esa es tu rama principal
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update last-updated.json with current timestamp
+        run: |
+          echo "{ \"lastUpdated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" }" > last-updated.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add last-updated.json
+          git commit -m "Update lastUpdated timestamp" || echo "No changes to commit"
+          git push
